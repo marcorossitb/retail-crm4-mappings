@@ -9,8 +9,13 @@ Riepilogo sintetico dei repository `Orders` non-picklist (escluso `OrderReposito
 - Stored procedure: `tb_erp_order_authorization_list_g`.
 - Parametri SQL principali: `filter = ErpOrderId='<orderId>'`, `fields`.
 - Output: `OrderAuthorization` con status, note, date request/manage e utenti (`applicant`, `licensing`, `rejector`, `authority`).
+
 Esempio mapping output:
 ```ts
+{
+  items: OrderAuthorization[]; // array di autorizzazioni dell'ordine
+}
+
 new OrderAuthorization({
   id: external.ErpOrderAuthorizationId,
   isAuthorizationNeeded: Boolean(external.IsAuthorizationNeeded),
@@ -33,7 +38,12 @@ new OrderAuthorization({
 - Parametri SQL principali: `erpOrderId`, `fields`, `orderBy` custom per severita (`ERR`, `WAR`, `INF`).
 - Output: `OrderWarning` con `type`, `checkType`, `origin`, `description`, `licensing`.
 Esempio mapping output:
+
 ```ts
+{
+  items: OrderWarning[]; // array di warning dell'ordine
+}
+
 new OrderWarning({
   id: external.ErpOrderCheckId,
   type: new OrderWarningType({
@@ -62,8 +72,13 @@ new OrderWarning({
   - lista: `Entity='erp_order'` + `ParentId` (o filtro sicurezza su ordini accessibili)
   - create/update: `noteId`, `text`, `noteTypeId`, `date`
 - Output: `OrderNote` con `type` (`OrderNoteType`) e `date`.
+
 Esempio mapping output:
 ```ts
+{
+  items: OrderNote[]; // array di note dell'ordine
+}
+
 new OrderNote({
   id: external.NoteId,
   orderId: external.ParentId,
@@ -91,8 +106,13 @@ new OrderNote({
   - delete: `erpOrderDetailId`, `applyLogics`
 - Output: `OrderRow` con `product` (`OrderProduct` completo) + `status` (`OrderRowStatus`) + `totalPrice`.
 - Nota: create/update/delete sono transazionali e applicano `applyLogics=true` sull'ultima riga del batch.
+
 Esempio mapping output:
 ```ts
+{
+  items: OrderRow[]; // array di righe dell'ordine
+}
+
 new OrderRow({
   id: external.ErpOrderDetailId,
   orderId: external.ErpOrderId,
@@ -126,8 +146,12 @@ new OrderRow({
 - Stored procedure: `tb_product_list_g_standard`.
 - Parametri SQL: `filter="Entity='erp_brand'"`, `orderBy='ProductCodeName'`, `date`, `fields`.
 - Output: `OrderBrand` (`id`, `code`, `name`).
+
 Esempio mapping output:
 ```ts
+{
+  items: OrderBrand[]; // array di brand disponibili
+}
 new OrderBrand({
   id: external.ProductId,
   code: external.ProductCode,
@@ -141,8 +165,13 @@ new OrderBrand({
 - Stored procedure: `tb_erp_order_pricelist_g`.
 - Parametri SQL: `erpOrderId`, `filter`, `fields`, `orderBy='ProductCodeName'`.
 - Output: `OrderProduct` ricco (prezzi, sconti, flag editabilita, promo, pricelist, deferred payment, brand, segmentazioni, date).
+
 Esempio mapping output:
 ```ts
+{
+  items: OrderProduct[]; // array di prodotti dell'ordine
+}
+
 new OrderProduct({
   id: external.ProductId,
   code: external.ProductCode,
@@ -183,8 +212,13 @@ new OrderProductPricelist({
 - Stored procedure: `tb_pricelist_product_list_g`.
 - Parametri SQL: `filter = PriceListId AND ProductId`, `fields`.
 - Output: `OrderProductPricelistDetail` (`minQuantity`, `maxQuantity`, `maxDiscount`, `deferredPaymentCodeName`).
+
 Esempio mapping output:
 ```ts
+{
+  items: OrderProductPricelistDetail[]; // array di pricelist details per il prodotto
+}
+
 new OrderProductPricelistDetail({
   id: external.PricelistId,
   name: `${external.PricelistCodeName} (${external.ProductCode} ${external.ProductCodeName})`,
@@ -202,8 +236,13 @@ new OrderProductPricelistDetail({
 - Stored procedure: `tb_erp_specialoffer_product_list_g`.
 - Parametri SQL: `filter = ErpOrderId`, `orderBy='SpecialOfferDescription'`, `fields`.
 - Output: `OrderPromotion` (`id`, `name`, `isNotApplicable`).
+
 Esempio mapping output:
 ```ts
+{
+  items: OrderPromotion[]; // array di promozioni per l'ordine
+}
+
 new OrderPromotion({
   id: external.SpecialOfferId,
   name: external.SpecialOfferDescription,
@@ -217,8 +256,15 @@ new OrderPromotion({
 - Stored procedure: `tb_erp_specialoffer_product_list_g`.
 - Parametri SQL: `filter = ErpOrderId AND ProductId`, `fields`.
 - Output: `OrderProductPromotion`.
+
 Esempio mapping output:
+
+
 ```ts
+{
+  items: OrderProductPromotion[]; // array di promozioni per il prodotto dell'ordine
+}
+
 new OrderProductPromotion({
   id: external.SpecialOfferId,
   name: external.SpecialOfferDescription,
